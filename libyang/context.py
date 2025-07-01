@@ -283,7 +283,7 @@ class Context:
     def __exit__(self, *args, **kwargs):
         self.destroy()
 
-    def error(self, msg: str, *args) -> list[LibyangParsedError]:
+    def error(self, msg: str, *args) -> LibyangError:
         errors = []
 
         if self.cdata:
@@ -303,7 +303,9 @@ class Context:
                 err = err.next
             lib.ly_err_clean(self.cdata, ffi.NULL)
 
-        return errors
+        error = LibyangError(msg)
+        error.data = errors
+        return error
 
     def parse_module(
         self,

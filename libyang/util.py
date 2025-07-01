@@ -18,7 +18,7 @@ class LibyangParsedError(Exception):
 
 # -------------------------------------------------------------------------------------
 class LibyangError(Exception):
-    pass
+    data: list[LibyangParsedError]
 
 
 # -------------------------------------------------------------------------------------
