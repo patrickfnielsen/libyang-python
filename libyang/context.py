@@ -16,7 +16,7 @@ from .data import (
     validation_flags,
 )
 from .schema import Module, SNode, schema_in_format
-from .util import DataType, IOType, LibyangError, c2str, data_load, str2c
+from .util import DataType, IOType, LibyangError, LibyangParsedError, c2str, data_load, str2c
 
 
 # -------------------------------------------------------------------------------------
@@ -283,24 +283,27 @@ class Context:
     def __exit__(self, *args, **kwargs):
         self.destroy()
 
-    def error(self, msg: str, *args) -> LibyangError:
-        msg %= args
+    def error(self, msg: str, *args) -> list[LibyangParsedError]:
+        errors = []
 
         if self.cdata:
             err = lib.ly_err_first(self.cdata)
             while err:
+                error = LibyangParsedError()
                 if err.msg:
-                    msg += ": %s" % c2str(err.msg)
+                    error.message = c2str(err.msg)
                 if err.data_path:
-                    msg += ": Data path: %s" % c2str(err.data_path)
+                    error.data_path = c2str(err.data_path)
                 if err.schema_path:
-                    msg += ": Schema path: %s" % c2str(err.schema_path)
+                    error.schema_path = c2str(err.schema_path)
                 if err.line != 0:
-                    msg += " (line %u)" % err.line
+                    error.line = err.line
+
+                errors.append(error)
                 err = err.next
             lib.ly_err_clean(self.cdata, ffi.NULL)
 
-        return LibyangError(msg)
+        return errors
 
     def parse_module(
         self,

@@ -8,6 +8,13 @@ import warnings
 
 from _libyang import ffi, lib
 
+# -------------------------------------------------------------------------------------
+class LibyangParsedError(Exception):
+    message: str
+    data_path: Optional[str]
+    schema_path: Optional[str]
+    line: Optional[int]
+
 
 # -------------------------------------------------------------------------------------
 class LibyangError(Exception):
