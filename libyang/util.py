@@ -2,6 +2,7 @@
 # Copyright (c) 2021 RACOM s.r.o.
 # SPDX-License-Identifier: MIT
 
+from dataclasses import dataclass
 import enum
 from typing import Optional
 import warnings
@@ -9,11 +10,12 @@ import warnings
 from _libyang import ffi, lib
 
 # -------------------------------------------------------------------------------------
+@dataclass
 class LibyangParsedError:
     message: str
-    data_path: Optional[str]
-    schema_path: Optional[str]
-    line: Optional[int]
+    data_path: Optional[str] = None
+    schema_path: Optional[str]  = None
+    line: Optional[int]  = None
 
 
 # -------------------------------------------------------------------------------------

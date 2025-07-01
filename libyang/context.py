@@ -289,7 +289,7 @@ class Context:
         if self.cdata:
             err = lib.ly_err_first(self.cdata)
             while err:
-                error = LibyangParsedError()
+                error = LibyangParsedError(msg)
                 if err.msg:
                     error.message = c2str(err.msg)
                 if err.data_path:
